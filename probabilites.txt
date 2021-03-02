@@ -1,0 +1,18 @@
+We'll need to check these over at some point, but they should be close.
+
+Para 1
+P(Fraud | Trav) = 0.01
+P(Fraud | -Trav) = 0.004
+P(Trav) = 0.05
+P(FP | -Trav, Fraud) = 0.1
+P(FP | -Trav, -Fraud) = 0.01
+P(FP | Trav) = 0.9
+
+Para 2
+P(OC) = 0.7
+P(IP | OC, -Fraud) = 0.01
+P(IP | OC, Fraud) = 0.02
+P(IP | -OC, -Fraud) = 0.001
+P(IP | -OC, Fraud) = 0.011
+P(OC | CRP) = 0.1
+P(-OC | CRP) = 0.001
