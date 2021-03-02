@@ -1,9 +1,9 @@
 class Factor:
     def __init__(size):
-        print('2-D list + other stuff?')
+        print('2-D list + what it represents (ex P(x|r) or P(x,r))?')
 
 
-def observe(factor, variable, value):
+def observe(factor, variable, value: bool):
     """
     Restrict a variable to some value in a given factor
     :param factor:
@@ -12,6 +12,8 @@ def observe(factor, variable, value):
     :return:
     """
     print('hello world')
+    # if a factor is P(x|y) and we know that y, then we can reduce the factor
+    #  to P(x) by only keeping the rows with y (and removing ones with -y)
 
 
 def multiply(factor1, factor2):
@@ -22,6 +24,20 @@ def multiply(factor1, factor2):
     :return:
     """
     print('hello world')
+    # need to validate the we can multiply these factors together
+    #  (ex P(x) * P(y|x) is valid but P(x) * P(y|z) isn't)
+
+
+def sumout(factor, variable):
+    """
+    Sums out a variable in a given factor
+    :param factor:
+    :param variable:
+    :return:
+    """
+    # similar to observe, but instead we sum probabilities of rows that are the
+    #  same (ex have var x set to -x)
+    # only works on 'and' factors (P(x,y,z)) not givens (P(x|y,z))?
 
 
 def normalize(factor):
@@ -46,3 +62,5 @@ def inference(factor_list, query_variables, ordered_list_of_hidden_variables,
     :return:
     """
     print('hello world')
+    # in theory just use the other functions to find the hidden var probs, in
+    #  order of ordered_list_of_hidden_variables
