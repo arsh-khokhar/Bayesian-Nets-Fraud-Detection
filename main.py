@@ -1,6 +1,4 @@
-class Factor:
-    def __init__(size):
-        print('2-D list + what it represents (ex P(x|r) or P(x,r))?')
+from Factor import Factor
 
 
 def observe(factor, variable, value: bool):
@@ -64,3 +62,10 @@ def inference(factor_list, query_variables, ordered_list_of_hidden_variables,
     print('hello world')
     # in theory just use the other functions to find the hidden var probs, in
     #  order of ordered_list_of_hidden_variables
+
+
+# kinda tedious to init but I can't think of a better option (shouldn't get
+# any worse than this though)
+fact = Factor(['x', 'y'], ['z', 'a'], [0, 0.1, 0.2, 0.3, 0, 0.1, 0.2, 0.3,
+                                       0, 0.1, 0.2, 0.3, 0, 0.1, 0.2, 0.3])
+fact.print_table()
