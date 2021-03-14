@@ -48,12 +48,14 @@ class Factor:
         if variable not in self.variables:
             return
         index = self.variables.index(variable)
-        self.table = self.table[self.table[:, index] != value]
+        self.table = self.table[self.table[:, index] == value]
+        index = self.variables.index(variable)
+        self.table = np.delete(self.table, index, axis=1)
+        self.variables.remove(variable)
 
     def normalize(self) -> None:
         sum_of_vals = sum(self.table[:, -1])
         self.table[:, -1] /= sum_of_vals
-        sum_of_vals = sum(self.table[:, -1])
     
     def sumout(self, variable: str) -> None:
         if variable not in self.variables:
@@ -63,7 +65,6 @@ class Factor:
         self.variables.remove(variable)
         summed_out = self.generate_table_skeleton(self.variables)
         summed_out[:, -1] = 0
-        self.print_factor()
         for row1 in summed_out:
             for row2 in self.table:
                 if (row1[:-1] == row2[:-1]).all():
@@ -86,6 +87,6 @@ test.normalize()
 print("\nAfter normalizing")
 test.print_factor()
 
-test.sumout("Ron")
-print("\nAfter summing out Ron")
+test.sumout("Mike")
+print("\nAfter summing out mike")
 test.print_factor()
