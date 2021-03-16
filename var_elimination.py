@@ -9,13 +9,23 @@ class Sign(IntEnum):
 
 class Factor:
     def __init__(self, title: str, solution_variables: List[str],
-                 given_variables: List[str], values: List[float]) -> None:
+                 given_variables: List[str], values: List[float],
+                 solution_evidence=None, given_evidence=None) -> None:
         self.title = title
         self.solution_variables = solution_variables
         self.given_variables = given_variables
         self.variables = given_variables + solution_variables
         self.values = values
         self.table = self.generate_table(self.variables, values)
+
+        if solution_evidence is None:
+            self.solution_evidence = []
+        else:
+            self.solution_evidence = solution_evidence
+        if given_evidence is None:
+            self.given_evidence = []
+        else:
+            self.given_evidence = given_evidence
 
     def generate_table_skeleton(self, variables: List[str]) -> np.ndarray:
         num_variables = len(variables)
@@ -34,6 +44,36 @@ class Factor:
         table = self.generate_table_skeleton(variables)
         table[:, -1] = values
         return table
+
+    def print_representation(self) -> None:
+        print('P(', end='')
+        for i, entry in enumerate(self.solution_evidence):
+            var, value = entry
+            if value == Sign.POSITIVE:
+                print('+{0}'.format(var), end='')
+            else:
+                print('-{0}'.format(var), end='')
+            if i != len(self.solution_evidence) - 1 or len(self.solution_variables) > 0:
+                print(',', end='')
+        for i, var in enumerate(self.solution_variables):
+            print(var, end='')
+            if i != len(self.solution_variables) - 1:
+                print(',', end='')
+        if len(self.given_variables) > 0:
+            print('|', end='')
+        for i, entry in enumerate(self.given_evidence):
+            var, value = entry
+            if value == Sign.POSITIVE:
+                print('+{0}'.format(var), end='')
+            else:
+                print('-{0}'.format(var), end='')
+            if i != len(self.given_evidence) - 1 or len(self.given_evidence) > 0:
+                print(',', end='')
+        for i, var in enumerate(self.given_variables):
+            print(var, end='')
+            if i != len(self.given_variables) - 1:
+                print(',', end='')
+        print(')')
 
     def print_factor(self) -> None:
         print()
@@ -66,6 +106,10 @@ class Factor:
         self.table = self.table[self.table[:, index] == value]
         index = self.variables.index(variable)
         self.table = np.delete(self.table, index, axis=1)
+        if variable in self.solution_variables:
+            self.solution_evidence.append((variable.lower(), value))
+        if variable in self.given_variables:
+            self.given_evidence.append((variable.lower(), value))
         self.remove_var(variable)
 
     def normalize(self) -> None:
@@ -88,9 +132,15 @@ class Factor:
 
     @staticmethod
     def multiply(factor1, factor2):
+        if not any((True for x in factor1.solution_variables if x in factor2.given_variables)):
+            temp = factor2
+            factor2 = factor1
+            factor1 = temp
+
         new_solution_vars = factor1.solution_variables + \
         [item for item in factor2.solution_variables if item not in factor1.solution_variables]
-        new_given_vars = [item for item in factor2.given_variables if item not in new_solution_vars]
+        new_given_vars = factor1.given_variables + \
+                         [item for item in factor2.given_variables if item not in new_solution_vars]
         new_prob_list = []
         for row1 in factor1.table:
             for row2 in factor2.table:
@@ -98,7 +148,9 @@ class Factor:
                     # print('{0} {1}'.format(row1, row2))
                     new_prob_list.append(row1[-1] * row2[-1])
 
-        return Factor("no title", new_solution_vars, new_given_vars, new_prob_list)
+        return Factor("no title", new_solution_vars, new_given_vars, new_prob_list,
+                      factor1.solution_evidence + factor2.solution_evidence,
+                      factor1.given_evidence + factor2.given_evidence)
 
     @staticmethod
     def is_valid_row_multiply(factor1, factor2, row1, row2) -> bool:
@@ -111,16 +163,16 @@ class Factor:
 
 ## Some testing code for factor methods
 
-x = Factor('title', ['r'], [], [0.1, 0.9])
-x2 = Factor('title', ['t'], ['r'], [0.8, 0.2, 0.1, 0.9])
-
-multi = Factor.multiply(x, x2)
-multi.print_factor()
-
-test2 = Factor('x2', ['l'], ['t'], [0.3, 0.7, 0.1, 0.9])
-
-multi = Factor.multiply(multi, test2)
-multi.print_factor()
+# x = Factor('title', ['r'], [], [0.1, 0.9])
+# x2 = Factor('title', ['t'], ['r'], [0.8, 0.2, 0.1, 0.9])
+#
+# multi = Factor.multiply(x, x2)
+# multi.print_factor()
+#
+# test2 = Factor('x2', ['l'], ['t'], [0.3, 0.7, 0.1, 0.9])
+#
+# multi = Factor.multiply(multi, test2)
+# multi.print_factor()
 
 
 # print("\nInitial factor")
