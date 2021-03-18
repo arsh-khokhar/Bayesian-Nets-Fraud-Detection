@@ -1,10 +1,11 @@
-from var_elimination import Factor, Sign
+from var_elimination import Factor
 from typing import List
 
 
 def print_all_factors(factor_list):
     for factor in factor_list:
         factor.print_representation()
+        # factor.print_factor()
     print()
 
 
@@ -17,7 +18,8 @@ def inference(factor_list: List[Factor], query_variables: List[str],
             factor.observe_var(evidence_var, evidence_value)
         if len(factor.variables) == 0:
             factor_list.remove(factor)
-    # print_all_factors(factor_list)
+    print('Initial factors:')
+    print_all_factors(factor_list)
 
     #  inference by enumeration
     # joined_factor = factor_list[0]
@@ -41,7 +43,8 @@ def inference(factor_list: List[Factor], query_variables: List[str],
             joined_factor = Factor.multiply(joined_factor, factors_to_multiply[i])
         joined_factor.sumout(var)
         factor_list.append(joined_factor)
-        # print_all_factors(factor_list)
+        print('After eliminating {0}:'.format(var))
+        print_all_factors(factor_list)
 
     joined_factor = factor_list[0]
     for i in range(1, len(factor_list)):
@@ -50,20 +53,3 @@ def inference(factor_list: List[Factor], query_variables: List[str],
     joined_factor.normalize()
     joined_factor.print_representation()
     joined_factor.print_factor()
-
-
-# factors = [Factor('title', ['r'], [], [0.1, 0.9]),
-#            Factor('title', ['t'], ['r'], [0.8, 0.2, 0.1, 0.9]),
-#            Factor('x2', ['l'], ['t', 'z'], [0.3, 0.7, 0.1, 0.9, 0.3, 0.7, 0.1, 0.9])]
-
-factors = [Factor('title', ['Z'], [], [0.1, 0.9]),
-           Factor('title', ['X1'], ['Z'], [0.8, 0.2, 0.1, 0.9]),
-           Factor('title', ['X2'], ['Z'], [0.8, 0.2, 0.1, 0.9]),
-           Factor('title', ['X3'], ['Z'], [0.8, 0.2, 0.1, 0.9]),
-           Factor('title', ['Y1'], ['X1'], [0.8, 0.2, 0.1, 0.9]),
-           Factor('title', ['Y2'], ['X2'], [0.8, 0.2, 0.1, 0.9]),
-           Factor('title', ['Y3'], ['X3'], [0.8, 0.2, 0.1, 0.9])]
-
-inference(factors, [], ['X1', 'X2', 'Z'],
-          [('Y1', Sign.POSITIVE), ('Y2', Sign.POSITIVE), ('Y3', Sign.POSITIVE)])
-

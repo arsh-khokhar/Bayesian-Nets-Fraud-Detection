@@ -14,5 +14,25 @@ P(IP | OC, -Fraud) = 0.01
 P(IP | OC, Fraud) = 0.02
 P(IP | -OC, -Fraud) = 0.001
 P(IP | -OC, Fraud) = 0.011
-P(OC | CRP) = 0.1
-P(-OC | CRP) = 0.001
+P(CRP | OC) = 0.1
+P(CRP | -OC) = 0.001
+
+P(OC)
+|+oc|0.7|
+|-oc|0.3|
+
+P(CRP|OC)
+|+oc|+crp|0.1|
+|+oc|-crp|0.9|
+|-oc|+crp|0.001|
+|-oc|-crp|0.999|
+
+P(Trav)
+|+trav|0.05|
+|-trav|0.95|
+
+P(Fraud|Trav) ?
+|+trav|+fraud|0.01|
+|+trav|-fraud|0.99|
+|-trav|+fraud|0.004|
+|-trav|-fraud|0.996|
