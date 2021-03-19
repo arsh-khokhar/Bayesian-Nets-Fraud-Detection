@@ -1,71 +1,31 @@
-from Factor import Factor
+import sys
+
+from Factor import Factor, Sign
+from Inference import inference
 
 
-def observe(factor, variable, value: bool):
-    """
-    Restrict a variable to some value in a given factor
-    :param factor:
-    :param variable:
-    :param value:
-    :return:
-    """
-    print('hello world')
-    # if a factor is P(x|y) and we know that y, then we can reduce the factor
-    #  to P(x) by only keeping the rows with y (and removing ones with -y)
+def main() -> None:
+    if len(sys.argv) <= 1:
+        print('Usage: python main.py [1 or 2 for 2b part 1 and 2 respectively]')
+        exit(-1)
+
+    sim_to_run = sys.argv[1]
+
+    factors = [Factor(['Trav'], [], [0.05, 0.95]),
+               Factor(['Fraud'], ['Trav'], [0.01, 0.99, 0.004, 0.996]),
+               Factor(['OC'], [], [0.7, 0.3]),
+               Factor(['CRP'], ['OC'], [0.1, 0.9, 0.001, 0.999]),
+               Factor(['FP'], ['Trav', 'Fraud'], [0.9, 0.1, 0.9, 0.1,
+                                                  0.1, 0.9, 0.01, 0.99]),
+               Factor(['IP'], ['OC', 'Fraud'], [0.02, 0.98, 0.01, 0.99,
+                                                0.011, 0.989, 0.001, 0.999])]
+
+    if sim_to_run == '1':
+        inference(factors, ['Fraud'], ['Trav', 'FP', 'IP', 'OC', 'CRP'], [])
+    else:
+        inference(factors, ['Fraud'], ['Trav', 'OC'],
+                  [('FP', Sign.POSITIVE), ('IP', Sign.NEGATIVE), ('CRP', Sign.POSITIVE)])
 
 
-def multiply(factor1, factor2):
-    """
-    Multiply two factors
-    :param factor1:
-    :param factor2:
-    :return:
-    """
-    print('hello world')
-    # need to validate the we can multiply these factors together
-    #  (ex P(x) * P(y|x) is valid but P(x) * P(y|z) isn't)
-
-
-def sumout(factor, variable):
-    """
-    Sums out a variable in a given factor
-    :param factor:
-    :param variable:
-    :return:
-    """
-    # similar to observe, but instead we sum probabilities of rows that are the
-    #  same (ex have var x set to -x)
-    # only works on 'and' factors (P(x,y,z)) not givens (P(x|y,z))?
-
-
-def normalize(factor):
-    """
-    Normalize a factor by dividing each entry by the sum of all the entries.
-    This is useful when the factor is a distribution (i.e. sum of the
-    probabilities must be 1).
-    :param factor:
-    :return:
-    """
-    print('hello world')
-
-
-def inference(factor_list, query_variables, ordered_list_of_hidden_variables,
-              evidence_list):
-    """
-    Too long to write here
-    :param factor_list:
-    :param query_variables:
-    :param ordered_list_of_hidden_variables:
-    :param evidence_list:
-    :return:
-    """
-    print('hello world')
-    # in theory just use the other functions to find the hidden var probs, in
-    #  order of ordered_list_of_hidden_variables
-
-
-# kinda tedious to init but I can't think of a better option (shouldn't get
-# any worse than this though)
-fact = Factor(['x', 'y'], ['z', 'a'], [0, 0.1, 0.2, 0.3, 0, 0.1, 0.2, 0.3,
-                                       0, 0.1, 0.2, 0.3, 0, 0.1, 0.2, 0.3])
-fact.print_table()
+if __name__ == '__main__':
+    main()
