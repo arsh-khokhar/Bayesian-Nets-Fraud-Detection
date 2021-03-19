@@ -1,7 +1,7 @@
 """
     File name: Inference.py
     Author: Arsh Khokhar, Kiernan Wiese
-    Date last modified: 18 March, 2021
+    Date last modified: 19 March, 2021
     Python Version: 3.8
 
     This script contains functions to calculate inference and print factors
@@ -14,6 +14,14 @@ from Factor import Factor, Sign
 
 def inference_by_enumeration(factor_list: List[Factor],
                              ordered_list_of_hidden_variables: List[str]):
+    """
+    Calculate P(factor_list | evidence_list) using inference by enumeration, after
+    all of the evidence is observed
+    This function is unused when doing inference
+
+    :param factor_list: List of the factors we'll use
+    :param ordered_list_of_hidden_variables: The order to sumout variables not in query_variables or evidence_list
+    """
     joined_factor = factor_list[0]
     for i in range(1, len(factor_list)):
         joined_factor = Factor.multiply(joined_factor, factor_list[i])
@@ -26,7 +34,15 @@ def inference_by_enumeration(factor_list: List[Factor],
 def var_elimination(factor_list: List[Factor], query_variables: List[str],
                     ordered_list_of_hidden_variables: List[str],
                     evidence_list: List[tuple[str, Sign]]):
+    """
+    Calculate P(factor_list | evidence_list) using variable elimination, after
+    all of the evidence is observed
 
+    :param factor_list: List of the factors we'll use
+    :param query_variables: We want to find this variables' probability
+    :param ordered_list_of_hidden_variables: The order to sumout variables not in query_variables or evidence_list
+    :param evidence_list: List of variables that we know the values of
+    """
     for var in ordered_list_of_hidden_variables:
         # find out which factors contain var, remove them from factor_list
         factors_to_multiply = []
@@ -64,7 +80,6 @@ def print_all_factors(factor_list: List[Factor]) -> None:
     Print a representation of all of the factors
 
     :param factor_list: The factors to print
-    :return:
     """
     for factor in factor_list:
         factor.print_representation()
