@@ -1,7 +1,4 @@
-# Bayesian-Nets-Fraud-Detection
-Bayesian Network based Fraud Detection system
-
-## Things to do:
--Figure out where the heck to actually start
--Draw a graph representing the network (and the tables?)
--????
+To run the program to calculate the probability for Q2b part 1, use:
+python main.py 1
+or Q2b part 2, use:
+python main.py 2

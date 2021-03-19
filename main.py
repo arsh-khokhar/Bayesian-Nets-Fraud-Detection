@@ -1,20 +1,30 @@
-from inference import inference
-from var_elimination import Factor, Sign
 import sys
 
+from Factor import Factor, Sign
+from Inference import inference
 
-def main():
-    print(sys.path)
-    factors = [Factor('title', ['A'], [], [0.1, 0.1]),
-               Factor('title', ['B'], ['A'], [0.1, 0.1, 0.1, 0.1]),
-               Factor('title', ['C'], [], [0.1, 0.1]),
-               Factor('title', ['D'], ['A', 'B', 'C'],
-                      [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]),
-               Factor('title', ['E'], ['D'], [0.1, 0.1, 0.1, 0.1]),
-               Factor('title', ['F'], ['D'], [0.1, 0.1, 0.1, 0.1]),
-               Factor('title', ['G'], ['F', 'C'], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])]
 
-    inference(factors, [], ['B', 'D', 'G', 'F'], [('C', Sign.POSITIVE)])
+def main() -> None:
+    if len(sys.argv) <= 1:
+        print('Usage: python main.py [1 or 2 for 2b part 1 and 2 respectively]')
+        exit(-1)
+
+    sim_to_run = sys.argv[1]
+
+    factors = [Factor(['Trav'], [], [0.05, 0.95]),
+               Factor(['Fraud'], ['Trav'], [0.01, 0.99, 0.004, 0.996]),
+               Factor(['OC'], [], [0.7, 0.3]),
+               Factor(['CRP'], ['OC'], [0.1, 0.9, 0.001, 0.999]),
+               Factor(['FP'], ['Trav', 'Fraud'], [0.9, 0.1, 0.9, 0.1,
+                                                  0.1, 0.9, 0.01, 0.99]),
+               Factor(['IP'], ['OC', 'Fraud'], [0.02, 0.98, 0.01, 0.99,
+                                                0.011, 0.989, 0.001, 0.999])]
+
+    if sim_to_run == '1':
+        inference(factors, ['Fraud'], ['Trav', 'FP', 'IP', 'OC', 'CRP'], [])
+    else:
+        inference(factors, ['Fraud'], ['Trav', 'OC'],
+                  [('FP', Sign.POSITIVE), ('IP', Sign.NEGATIVE), ('CRP', Sign.POSITIVE)])
 
 
 if __name__ == '__main__':
