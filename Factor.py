@@ -65,6 +65,10 @@ class Factor:
         return table
 
     def print_representation(self) -> None:
+        """
+        Print out the representation of a factor
+        ex P(+x,y|-t,a)
+        """
         if self.is_probability:
             print('P(', end='')
         else:
@@ -97,10 +101,6 @@ class Factor:
                 print(',', end='')
 
     def print_factor(self) -> None:
-        """
-        Print out the represntation of a factor
-        ex P(+x,y|-t,a)
-        """
         for row in self.table:
             for i, cell in enumerate(row):
                 if cell == Sign.POSITIVE:
