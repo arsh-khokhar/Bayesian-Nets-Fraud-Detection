@@ -8,7 +8,6 @@
     as we go.
 """
 from typing import List, Tuple
-
 from Factor import Factor, Sign
 
 

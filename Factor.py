@@ -122,7 +122,7 @@ class Factor:
         print(')')
 
     @staticmethod
-    def print_representation_helper(evidence_vars, variables) -> None:
+    def print_representation_helper(evidence_vars: List[str], variables: List[str]) -> None:
         """
         Print out the variables portion of a factor representation
 
@@ -272,7 +272,7 @@ class Factor:
                       False)
 
     @staticmethod
-    def is_valid_row_multiply(variables1, variables2, row1, row2) -> bool:
+    def is_valid_row_multiply(variables1: list, variables2: list, row1: list, row2: list) -> bool:
         """
         Two rows are valid if there are no contradictions between them
         Ex if two rows have +x and -x respectively then they're not valid
