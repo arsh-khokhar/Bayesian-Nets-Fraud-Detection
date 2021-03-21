@@ -1,12 +1,13 @@
 """
     File name: Inference.py
     Author: Arsh Khokhar, Kiernan Wiese
-    Date last modified: 19 March, 2021
+    Date last modified: 21 March, 2021
     Python Version: 3.8
 
     This script contains functions to calculate inference and print factors
     as we go.
 """
+
 from typing import List, Tuple
 from Factor import Factor, Sign
 

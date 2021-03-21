@@ -1,3 +1,13 @@
+"""
+    File name: Factor.py
+    Author: Arsh Khokhar, Kiernan Wiese
+    Date last modified: 21 March, 2021
+    Python Version: 3.8
+
+    This script contains the Factor class with necessary utility functions
+    for doing inference using variable elimination or enumeration.
+"""
+
 from enum import IntEnum
 import numpy as np
 from typing import List
@@ -26,6 +36,7 @@ class Factor:
                                 (only used for printing the representation)
         given_evidence      Evidence variables that are on the given side
                                 (only used for printing the representation)
+        is_probability      Indicates if the factor is a probability table as well
     """
     def __init__(self, solution_variables: List[str],
                  given_variables: List[str], values: List[float],
@@ -38,8 +49,9 @@ class Factor:
         :param values: probability values of the table
         :param solution_evidence: Evidence variables that are on the solution side
                                 (only used for printing the representation)
-        "param given_evidence: Evidence variables that are on the given side
-                                (only used for printing the representation) 
+        :param given_evidence: Evidence variables that are on the given side
+                                (only used for printing the representation)
+        :param is_probability: Indicates if the factor is a probability table as well 
         """
         self.solution_variables = solution_variables
         self.given_variables = given_variables
