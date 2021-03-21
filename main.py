@@ -4,7 +4,7 @@
     Date last modified: 19 March, 2021
     Python Version: 3.8
 
-    This script contains the main function that calls inference.py to solve
+    This script contains the main function that calls Inference.py to solve
     and show solutions a specific inference query. It parses command line
     arguments that specify which query to do.
 """

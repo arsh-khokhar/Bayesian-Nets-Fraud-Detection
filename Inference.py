@@ -7,7 +7,7 @@
     This script contains functions to calculate inference and print factors
     as we go.
 """
-from typing import List
+from typing import List, Tuple
 
 from Factor import Factor, Sign
 
@@ -33,7 +33,7 @@ def inference_by_enumeration(factor_list: List[Factor],
 
 def var_elimination(factor_list: List[Factor], query_variables: List[str],
                     ordered_list_of_hidden_variables: List[str],
-                    evidence_list: List[tuple[str, Sign]]):
+                    evidence_list: List[Tuple[str, Sign]]):
     """
     Calculate P(factor_list | evidence_list) using variable elimination, after
     all of the evidence is observed
@@ -89,7 +89,7 @@ def print_all_factors(factor_list: List[Factor]) -> None:
 
 def inference(factor_list: List[Factor], query_variables: List[str],
               ordered_list_of_hidden_variables: List[str],
-              evidence_list: List[tuple[str, Sign]]) -> None:
+              evidence_list: List[Tuple[str, Sign]]) -> None:
     """
     Calculate P(factor_list | evidence_list) using variable elimination
 

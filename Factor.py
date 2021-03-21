@@ -30,11 +30,29 @@ class Factor:
     def __init__(self, solution_variables: List[str],
                  given_variables: List[str], values: List[float],
                  solution_evidence=None, given_evidence=None, is_probability=True) -> None:
+        """
+        Constructor of a Factor
+
+        :param solution_variables: Non-evidence variables that are on the solution side
+        :param given_variables: Non-evidence variables that are on the given side
+        :param values: probability values of the table
+        :param solution_evidence: Evidence variables that are on the solution side
+                                (only used for printing the representation)
+        "param given_evidence: Evidence variables that are on the given side
+                                (only used for printing the representation) 
+        """
         self.solution_variables = solution_variables
         self.given_variables = given_variables
         self.variables = given_variables + solution_variables
+
+        # generating the table using the variables and the values
         self.table = self.generate_table(self.variables, values)
 
+        # default value must be set to None for solution_evidence 
+        # and given_evidence so that each Factor object can create
+        # its own copy of them. If default value is set to empty
+        # list, multiple objects refer to the same empty list object
+        # which causes issues 
         if solution_evidence is None:
             self.solution_evidence = []
         else:
@@ -43,16 +61,31 @@ class Factor:
             self.given_evidence = []
         else:
             self.given_evidence = given_evidence
+        
+        # If the factor is also a probability table.
         self.is_probability = is_probability
 
     @staticmethod
     def generate_table_skeleton(variables: List[str]) -> np.ndarray:
+        """
+        Generate a probability table with all the possible combinations
+        of the input variables without any probability values
+
+        :param variables: variables to generate the skeleton table for
+        :return: Mutidimensional numpy array representing the factor table
+                with the values (i.e. last column) unassigned
+        """
         num_variables = len(variables)
-        num_rows = 2**num_variables
-        num_cols = num_variables + 1
+        num_rows = 2**num_variables  # assuming the domain length is 2 for all vars
+        num_cols = num_variables + 1  # one col per var + last col for probability values 
         table = np.zeros([num_rows, num_cols])
-        table.fill(Sign.UNDEFINED)
+        table.fill(Sign.UNDEFINED)     # initializing everything with undefined
         for i in range(len(variables)):
+            # combination_len is the length of same value for generating the
+            # combinations with other variables. E.g., for a table with 3 variables,
+            # The first column will be ++++---- (combination_len is 4 for this one)
+            # The second column will be ++--++-- (combination_len is 2 for this one)
+            # The last variable's column will be +-+-+-+- (combination_len is 1 here)
             combination_len = 2**(num_variables - i)//2
             for j in range(0, num_rows, combination_len*2):
                 table[j:combination_len+j, [i]] = Sign.POSITIVE
@@ -60,8 +93,17 @@ class Factor:
         return table
         
     def generate_table(self, variables: List[str], values: List[float]) -> np.ndarray:
+        """
+        Generate a probability table with all the possible combinations
+        of the input variables and the given probability values. Values
+        must be in correct order for this to work correctly.
+
+        :param variables: variables for the table
+        :param values: probability values of each row in correct order
+        :return: Mutidimensional numpy array representing the factor table
+        """
         table = self.generate_table_skeleton(variables)
-        table[:, -1] = values
+        table[:, -1] = values   # last column is the probability values
         return table
 
     def print_representation(self) -> None:
@@ -101,6 +143,10 @@ class Factor:
                 print(',', end='')
 
     def print_factor(self) -> None:
+        """
+        Print the factor
+
+        """
         for row in self.table:
             for i, cell in enumerate(row):
                 if cell == Sign.POSITIVE:
@@ -108,11 +154,11 @@ class Factor:
                 elif cell == Sign.NEGATIVE:
                     print('{:^10s}'.format("-" + self.variables[i].lower()), end='|')
                 else:
-                    cell_value = "{:^.5f}".format(cell) 
+                    cell_value = "{:^.5f}".format(cell)
                     print('{:^10s}'.format(cell_value), end='|\n')
         print()
 
-    def remove_var(self, variable: str):
+    def remove_var(self, variable: str) -> None:
         """
         Remove a variable from variables, given_variables, and
         solution_variables after it's observed or summed out
@@ -124,7 +170,7 @@ class Factor:
         self.safe_remove_list(self.solution_variables, variable)
 
     @staticmethod
-    def safe_remove_list(input_list: list, value):
+    def safe_remove_list(input_list: list, value) -> None:
         """
         Deletes an entry from a list without throwing the ValueError exception
         in case the entry is not in the set
@@ -138,6 +184,12 @@ class Factor:
             pass
 
     def observe_var(self, variable: str, value: Sign) -> None:
+        """
+        Restricts a variable to some value in the factor
+
+        :param variable: Variable to restrict
+        :param value: value for restriction
+        """
         if variable not in self.variables:
             return
         index = self.variables.index(variable)
@@ -151,20 +203,32 @@ class Factor:
         self.remove_var(variable)
 
     def normalize(self) -> None:
+        """
+        Normalizes the factor so that all rows add up to 1
+
+        """
         sum_of_vals = sum(self.table[:, -1])
         self.table[:, -1] /= sum_of_vals
     
     def sumout(self, variable: str) -> None:
+        """
+        Sums out a variable in the factor
+
+        :param variable: variable to sumout
+        """
         if variable not in self.variables:
             return
-        index = self.variables.index(variable)
+        index = self.variables.index(variable) # getting the index of the variable
         self.table = np.delete(self.table, index, axis=1)
         self.remove_var(variable)
+        # new table for summed out rows
         summed_out = self.generate_table_skeleton(self.variables)
         summed_out[:, -1] = 0
         for row1 in summed_out:
             for row2 in self.table:
-                if (row1[:-1] == row2[:-1]).all():
+                # if two rows are the same after removing a variable,
+                # their values are added
+                if np.array_equal(row1[:-1], row2[:-1]):
                     row1[-1] = row1[-1] + row2[-1]
         self.table = summed_out
 
@@ -210,14 +274,14 @@ class Factor:
     @staticmethod
     def is_valid_row_multiply(variables1, variables2, row1, row2) -> bool:
         """
-        To rows are valid if there are no contradictions between them
+        Two rows are valid if there are no contradictions between them
         Ex if two rows have +x and -x respectively then they're not valid
 
         :param variables1: Variables of factor 1
         :param variables2: Variables of factor 2
         :param row1: Row from factor 1
         :param row2: Row from factor 2
-        :return:
+        :return: True if two rows are valid to multiply, False otherwise
         """
         for i, var1 in enumerate(variables1):
             for j, var2 in enumerate(variables2):
