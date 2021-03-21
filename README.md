@@ -2,7 +2,7 @@
 
 ### Setup Instructions
 
-Use the command `pip install requirements.txt` file to install the necessary dependencies
+Use the command `pip install requirements.txt` to install the necessary dependencies
 
 ### Running Instructions
 
