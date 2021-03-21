@@ -1,3 +1,14 @@
+"""
+    File name: main.py
+    Author: Arsh Khokhar, Kiernan Wiese
+    Date last modified: 21 March, 2021
+    Python Version: 3.8
+
+    This script contains the main function that calls Inference.py to solve
+    and show solutions a specific inference query. It parses command line
+    arguments that specify which query to do.
+"""
+
 import sys
 
 from Factor import Factor, Sign

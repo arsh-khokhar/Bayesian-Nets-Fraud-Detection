@@ -1,4 +1,10 @@
-To run the program to calculate the probability for Q2b part 1, use:
-python main.py 1
-or Q2b part 2, use:
-python main.py 2
+# Fraud Detection using Bayesian Network
+
+### Setup Instructions
+
+Use the command `pip install requirements.txt` to install the necessary dependencies
+
+### Running Instructions
+
+- To run the first query `P(Fraud)`, run the command `python main.py 1`
+- To run the second query `P(Fraud|+fp, -ip, +crp)`, run the command `python main.py 2`
