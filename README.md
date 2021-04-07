@@ -1,6 +1,6 @@
 # Fraud Detection using Bayesian Network
 
-# The Network
+## The Network
 
 ![bayes-net](./bayes-net.png?raw=true)
 
