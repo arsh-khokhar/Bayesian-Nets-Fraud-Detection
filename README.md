@@ -1,5 +1,9 @@
 # Fraud Detection using Bayesian Network
 
+# The Network
+
+![bayes-net](./bayes-net.png?raw=true)
+
 ### Setup Instructions
 
 Use the command `pip install requirements.txt` to install the necessary dependencies
